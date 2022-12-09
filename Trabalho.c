@@ -1,6 +1,9 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
+#define QTDIMG 1312
 
 struct pgm{
 	int tipo;
@@ -9,32 +12,55 @@ struct pgm{
 	int mv;
 	unsigned char *pData;
 };
- 
-int main(void)
-{
-    void readPGMImage(struct pgm *, char *);
-    void ProcessoPGMImage(struct pgm *,struct pgm *);
+
+void readPGMImage(struct pgm *, char *);
+void ProcessoPGMImage(struct pgm *,struct pgm *);
+
+int main(void){
+
     DIR *d;
+	clock_t begin, end;
+	double time_per_img, time_total=0;
     struct dirent *dir;
     struct pgm img,img2;
-    d = opendir("./oncotex_pgm");
-    if (d)
-    {
-        dir = readdir(d);
-        dir = readdir(d);
-        dir = readdir(d);
-        dir = readdir(d);
-        readPGMImage(&img,dir->d_name);
-        dir = readdir(d);
-        readPGMImage(&img2,dir->d_name);
-        ProcessoPGMImage(&img,&img2);
 
-        printf("%s\n", dir->d_name);
-        closedir(d);
-    
+	//Aqui nós começamos a contagem
+	begin = clock();
+	//Aqui nós abrimos o arquivo um por um		
+    d = opendir("./oncotex_pgm");
+	//Aqui nós conferimos se existe algum arquivo nessa página
+    if (d){
+		
+		//Aqui nós usamos dois dir's fora do FOR para "limpar" arquivos que irão ser utilzados no processo
+        dir = readdir(d);
+        dir = readdir(d);
+
+		//Aqui nos usamos um FOR para realizar todos os processos para cada duas imagens(sem filtro e com filtro)
+		for(int i=0;i<=(QTDIMG/2);I++){
+        	dir = readdir(d);
+        	readPGMImage(&img,dir->d_name);
+        	dir = readdir(d);
+        	readPGMImage(&img2,dir->d_name);
+        	ProcessoPGMImage(&img,&img2);
+
+        	printf("%s\n", dir->d_name);
+		}
+		closedir(d);
     }
 
-    return(0);
+		//Finalizamos a contagem
+		end = clock();
+
+		//Armazenando o tempo médio gasto para cada imagem
+		time_per_img = (double)(end - begin) / CLOCKS_PER_SEC;
+		//Armazenando o tempo total gasto nos processos
+		time_total += time_per_img;
+
+
+
+	printf("Tempo médio: %lf\n",time_total/QTDIMG);
+	printf("Tempo Total: %lf\n",time_total);
+	return 0;
 }
 
 void readPGMImage(struct pgm *pio, char *filename){
