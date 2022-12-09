@@ -1,2 +1,2 @@
-# Trabalho-FInal
+# Trabalho-Final
 Equipe do Hexa
