@@ -19,24 +19,24 @@ void ProcessoPGMImage(struct pgm *,struct pgm *);
 int main(void){
 
     DIR *d;
-	clock_t begin, end;
-	double time_per_img, time_total=0;
+    clock_t begin, end;
+    double time_per_img, time_total=0;
     struct dirent *dir;
     struct pgm img,img2;
 
-	//Aqui nós começamos a contagem
-	begin = clock();
-	//Aqui nós abrimos o arquivo um por um		
+    //Aqui nós começamos a contagem
+    begin = clock();
+    //Aqui nós abrimos a pasta contento os arquivos		
     d = opendir("./oncotex_pgm");
-	//Aqui nós conferimos se existe algum arquivo nessa página
+    //Aqui nós conferimos se existe algum arquivo nessa página
     if (d){
 		
-		//Aqui nós usamos dois dir's fora do FOR para "limpar" arquivos que irão ser utilzados no processo
+	//Aqui nós usamos dois dir's fora do FOR para "limpar" arquivos que não irão ser utilzados no processo
         dir = readdir(d);
         dir = readdir(d);
 
-		//Aqui nos usamos um FOR para realizar todos os processos para cada duas imagens(sem filtro e com filtro)
-		for(int i=0;i<=(QTDIMG/2);I++){
+	//Aqui nos usamos um FOR para realizar todos os processos para cada duas imagens(sem filtro e com filtro)
+	for(int i=0;i<=(QTDIMG/2);I++){
         	dir = readdir(d);
         	readPGMImage(&img,dir->d_name);
         	dir = readdir(d);
@@ -44,23 +44,22 @@ int main(void){
         	ProcessoPGMImage(&img,&img2);
 
         	printf("%s\n", dir->d_name);
-		}
-		closedir(d);
+	}
+	closedir(d);
     }
 
-		//Finalizamos a contagem
-		end = clock();
+    //Finalizamos a contagem
+    end = clock();
 
-		//Armazenando o tempo médio gasto para cada imagem
-		time_per_img = (double)(end - begin) / CLOCKS_PER_SEC;
-		//Armazenando o tempo total gasto nos processos
-		time_total += time_per_img;
+    //Armazenando o tempo médio gasto para cada imagem
+    time_per_img = (double)(end - begin) / CLOCKS_PER_SEC;
+    //Armazenando o tempo total gasto nos processos
+    time_total += time_per_img;
 
 
-
-	printf("Tempo médio: %lf\n",time_total/QTDIMG);
-	printf("Tempo Total: %lf\n",time_total);
-	return 0;
+    printf("Tempo médio: %lf\n",time_total/QTDIMG);
+    printf("Tempo Total: %lf\n",time_total);
+    return 0;
 }
 
 void readPGMImage(struct pgm *pio, char *filename){
