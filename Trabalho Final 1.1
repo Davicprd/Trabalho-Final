@@ -162,15 +162,9 @@ void ProcessoPGMImage(struct pgm *pio, struct pgm *pio2, char *filename, int qua
     {
         for (int j = 0; j < (quant); j++)
         {
-            if (!(j % quant))
-            {
-                printf("\n");
-            }
-            printf("%i,", scm[i][j]);
             fprintf(f, "%i, ", scm[i][j]);
         }
     }
-    printf("%c", filename[0]);
     fprintf(f, "%c\n", filename[0]);
-    printf("\n");
+
 }
