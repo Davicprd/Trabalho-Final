@@ -1,7 +1,6 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 struct pgm
 {
@@ -13,7 +12,7 @@ struct pgm
 };
 
 void readPGMImage(struct pgm *, char *);
-void viewPGMImage(struct pgm *, struct pgm *);
+void viewPGMImage(struct pgm *, struct pgm *,char *filename);
 
 int main(void)
 {
@@ -29,7 +28,7 @@ int main(void)
         readPGMImage(&img, dir->d_name);
         dir = readdir(d);
         readPGMImage(&img2, dir->d_name);
-        viewPGMImage(&img, &img2);
+        viewPGMImage(&img, &img2,dir->d_name);
         closedir(d);
     }
 
@@ -97,7 +96,7 @@ void readPGMImage(struct pgm *pio, char *filename)
     fclose(fp);
 }
 
-void viewPGMImage(struct pgm *pio, struct pgm *pio2)
+void viewPGMImage(struct pgm *pio, struct pgm *pio2,char *filename)
 {
     FILE *f;
     int quant;
@@ -116,7 +115,7 @@ void viewPGMImage(struct pgm *pio, struct pgm *pio2)
             scm[i][j] = 0;
         }
     }
-    for (int i = 1; i < (pio->c * pio2->c); i++)
+    for (int i = 0; i < (pio->c * pio2->c); i++)
     {
 
         scm[*(pio->pData + i) / (256 / quant)][*(pio2->pData + i) / (256 / quant)] += 1;
@@ -136,5 +135,7 @@ void viewPGMImage(struct pgm *pio, struct pgm *pio2)
         }
 
     }
+    printf("%c",filename[0]);
+    fprintf(f,"%c",filename[0]);
     fclose(f);
 }
