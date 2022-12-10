@@ -1,0 +1,150 @@
+#include <dirent.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+struct pgm
+{
+    int tipo;
+    int c;
+    int r;
+    int mv;
+    unsigned char *pData;
+};
+
+void readPGMImage(struct pgm *, char *);
+void viewPGMImage(struct pgm *, struct pgm *);
+
+int main(void)
+{
+    DIR *d;
+    struct dirent *dir;
+    struct pgm img, img2;
+    d = opendir("./oncotex_pgm");
+    if (d)
+    {
+        dir = readdir(d);
+        dir = readdir(d);
+        dir = readdir(d);
+        readPGMImage(&img, dir->d_name);
+        dir = readdir(d);
+        readPGMImage(&img2, dir->d_name);
+        viewPGMImage(&img, &img2);
+        closedir(d);
+    }
+
+    return (0);
+}
+
+void readPGMImage(struct pgm *pio, char *filename)
+{
+
+    FILE *fp;
+    char ch;
+
+    if (!(fp = fopen(filename, "r")))
+    {
+        perror("Erro.");
+        exit(1);
+    }
+
+    if ((ch = getc(fp)) != 'P')
+    {
+        puts("A imagem fornecida não está no formato pgm");
+        exit(2);
+    }
+
+    pio->tipo = getc(fp) - 48;
+
+    fseek(fp, 1, SEEK_CUR);
+
+    while ((ch = getc(fp)) == '#')
+    {
+        while ((ch = getc(fp)) != '\n')
+            ;
+    }
+
+    fseek(fp, -2, SEEK_CUR);
+
+    fscanf(fp, "%d %d", &pio->c, &pio->r);
+    if (ferror(fp))
+    {
+        perror(NULL);
+        exit(3);
+    }
+    fscanf(fp, "%d", &pio->mv);
+    fseek(fp, 1, SEEK_CUR);
+
+    pio->pData = (unsigned char *)malloc(pio->r * pio->c * sizeof(unsigned char));
+
+    switch (pio->tipo)
+    {
+    case 2:
+        puts("Lendo imagem PGM (dados em texto)");
+        for (int k = 0; k < (pio->r * pio->c); k++)
+        {
+            fscanf(fp, "%hhu", pio->pData + k);
+        }
+        break;
+    case 5:
+        puts("Lendo imagem PGM (dados em binário)");
+        fread(pio->pData, sizeof(unsigned char), pio->r * pio->c, fp);
+        break;
+    default:
+        puts("Não está implementado");
+    }
+
+    fclose(fp);
+}
+
+void viewPGMImage(struct pgm *pio, struct pgm *pio2)
+{
+    FILE *f;
+    int cont = 0;
+
+    int **scm = calloc(256, sizeof(int));
+    for (int i = 0; i < (256); i++)
+    {
+        scm[i] = calloc(256, sizeof(int));
+    }
+    for (int i = 0; i < (256); i++)
+    {
+        for (int j = 0; j < (256); j++)
+        {
+            scm[i][j] = 0;
+        }
+    }
+    for (int i = 1; i < (pio2->c); i++)
+    {
+        for (int j = 0; j < (pio2->c); j++)
+        {
+            if (*(pio->pData + (i * j)) == *(pio2->pData + (i * j)))
+            {
+                scm[*(pio->pData + (i * j))][*(pio->pData + (i * j))] += 1;
+            }
+            else
+            {
+                scm[*(pio->pData + (i * j))][*(pio->pData + (i * j)) + 1] += 1;
+            }
+        }
+    }
+    f = fopen("SCM.txt", "w+");
+    for (int i = 0; i < (256); i++)
+    {
+        for (int j = 0; j < (256); j++)
+        {
+            if (!(j % 256))
+            {
+                printf("\n");
+            }
+            printf("%i,", scm[i][j]);
+            fprintf(f, "%i,", scm[i][j]);
+            cont++;
+            if (cont == 94)
+            {
+                fprintf(f, "\n");
+                cont = 0;
+            }
+        }
+    }
+    fclose(f);
+}
