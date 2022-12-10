@@ -1,6 +1,7 @@
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 struct pgm
 {
@@ -99,52 +100,41 @@ void readPGMImage(struct pgm *pio, char *filename)
 void viewPGMImage(struct pgm *pio, struct pgm *pio2)
 {
     FILE *f;
-    int cont = 0;
+    int quant;
+    puts("Digite o número de niveis de quantização: (8/16/32/64/128/256)");
+    scanf("%i",&quant);
 
-    int **scm = calloc(256, sizeof(int));
-    for (int i = 0; i < (256); i++)
+    int **scm = calloc(quant, sizeof(int));
+    for (int i = 0; i < (quant); i++)
     {
-        scm[i] = calloc(256, sizeof(int));
+        scm[i] = calloc(quant, sizeof(int));
     }
-    for (int i = 0; i < (256); i++)
+    for (int i = 0; i < (quant); i++)
     {
-        for (int j = 0; j < (256); j++)
+        for (int j = 0; j < (quant); j++)
         {
             scm[i][j] = 0;
         }
     }
-    for (int i = 1; i < (pio2->c); i++)
+    for (int i = 1; i < (pio->c * pio2->c); i++)
     {
-        for (int j = 0; j < (pio2->c); j++)
-        {
-            if (*(pio->pData + (i * j)) == *(pio2->pData + (i * j)))
-            {
-                scm[*(pio->pData + (i * j))][*(pio->pData + (i * j))] += 1;
-            }
-            else
-            {
-                scm[*(pio->pData + (i * j))][*(pio->pData + (i * j)) + 1] += 1;
-            }
-        }
+
+        scm[*(pio->pData + i) / (256 / quant)][*(pio2->pData + i) / (256 / quant)] += 1;
     }
+
     f = fopen("SCM.txt", "w+");
-    for (int i = 0; i < (256); i++)
+    for (int i = 0; i < (quant); i++)
     {
-        for (int j = 0; j < (256); j++)
+        for (int j = 0; j < (quant); j++)
         {
-            if (!(j % 256))
+            if (!(j % quant))
             {
                 printf("\n");
             }
             printf("%i,", scm[i][j]);
-            fprintf(f, "%i,", scm[i][j]);
-            cont++;
-            if (cont == 94)
-            {
-                fprintf(f, "\n");
-                cont = 0;
-            }
+            fprintf(f, "%i, ", scm[i][j]);
         }
+
     }
     fclose(f);
 }
