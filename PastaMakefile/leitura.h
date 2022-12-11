@@ -1,1 +1,0 @@
-void readPGMImage(struct pgm *, char *);

@@ -1,1 +1,0 @@
-void ProcessoPGMImage(struct pgm *, struct pgm *, char *, int );
