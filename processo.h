@@ -80,4 +80,4 @@ void Processo(struct pgm *img, struct pgm *img2, char *filename)
         }
     }
     fprintf(file, "%c\n", filename[0]);
-}
+} 
