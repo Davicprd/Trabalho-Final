@@ -1,6 +1,6 @@
 #include "processo.h"
 
-void LerIMG(struct pgm *pio, char *filename)
+void LerIMG(struct pgm *img, char *filename)
 {
     FILE *fp;
     char ch;
@@ -17,7 +17,7 @@ void LerIMG(struct pgm *pio, char *filename)
         exit(2);
     }
 
-    pio->tipo = getc(fp) - 48;
+    img->tipo = getc(fp) - 48;
 
     fseek(fp, 1, SEEK_CUR);
 
@@ -29,27 +29,27 @@ void LerIMG(struct pgm *pio, char *filename)
 
     fseek(fp, -2, SEEK_CUR);
 
-    fscanf(fp, "%d %d", &pio->c, &pio->r);
+    fscanf(fp, "%d %d", &img->i, &img->j);
     if (ferror(fp))
     {
         perror(NULL);
         exit(3);
     }
-    fscanf(fp, "%d", &pio->mv);
-    fseek(fp, 1, SEEK_CUR);
+    fscanf(fp, "%d", &img->quan);
+    fseek(fp, 0, SEEK_CUR);
 
-    pio->pData = (unsigned char *)malloc(pio->r * pio->c * sizeof(unsigned char));
+    img->pData = (unsigned char *)malloc(img->j * img->i * sizeof(unsigned char));
 
-    switch (pio->tipo)
+    switch (img->tipo)
     {
     case 2:
-        for (int k = 0; k < (pio->r * pio->c); k++)
+        for (int k = 0; k < (img->j * img->i); k++)
         {
-            fscanf(fp, "%hhu", pio->pData + k);
+            fscanf(fp, "%hhu", img->pData + k);
         }
         break;
     case 5:
-        fread(pio->pData, sizeof(unsigned char), pio->r * pio->c, fp);
+        fread(img->pData, sizeof(unsigned char), img->j * img->i, fp);
         break;
     default:
         puts("Não está implementado");
@@ -58,7 +58,7 @@ void LerIMG(struct pgm *pio, char *filename)
     fclose(fp);
 }
 
-void Processo(struct pgm *pio, struct pgm *pio2, char *filename, int quant, FILE *f)
+void Processo(struct pgm *img, struct pgm *img2, char *filename)
 {
     int **scm = calloc(quant, sizeof(int));
     for (int i = 0; i < (quant); i++)
@@ -66,18 +66,18 @@ void Processo(struct pgm *pio, struct pgm *pio2, char *filename, int quant, FILE
         scm[i] = calloc(quant, sizeof(int));
     }
 
-    for (int i = 0; i < (pio->c * pio2->r); i++)
+    for (int i = 0; i < (img->i * img2->j); i++)
     {
 
-        scm[(*(pio->pData + i) / ((pio->mv + 1) / quant))][(*(pio2->pData + i) / ((pio2->mv + 1) / quant))] += 1;
+        scm[(*(img->pData + i) / ((img->quan + 1) / quant))][(*(img2->pData + i) / ((img2->quan + 1) / quant))] += 1;
     }
 
     for (int i = 0; i < (quant); i++)
     {
         for (int j = 0; j < (quant); j++)
         {
-            fprintf(f, "%i, ", scm[i][j]);
+            fprintf(file, "%i, ", scm[i][j]);
         }
     }
-    fprintf(f, "%c\n", filename[0]);
+    fprintf(file, "%c\n", filename[0]);
 }
