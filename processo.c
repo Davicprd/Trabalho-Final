@@ -75,7 +75,7 @@ void Processo(struct pgm *pio, struct pgm *pio2, char *filename, int quant, FILE
     for (int i = 0; i < (pio->c * pio2->r); i++)
     {
 
-        scm[(*(pio->pData + i) / (256 / quant))][(*(pio2->pData + i) / (256 / quant))] += 1;
+        scm[(*(pio->pData + i) / ((pio->mv + 1) / quant))][(*(pio2->pData + i) / ((pio2->mv + 1) / quant))] += 1;
     }
 
     for (int i = 0; i < (quant); i++)
