@@ -6,37 +6,37 @@ int main(void)
     // Aqui nos solicitamos a quantização em N níveis para o usuário
     puts("Digite o nível de quantização: ");
     scanf("%i", &quant);
-    sprintf(a_name, "%i-scm.txt", quant);
+    sprintf(arq_name, "%i-scm.txt", quant);
     // Aqui nós começamos a contagem
     begin = clock();
     // Aqui nós abrimos a pasta contento os arquivos
-    d = opendir("./oncotex_pgm");
+    diretorio = opendir("./oncotex_pgm");
     // Aqui nós conferimos se existe algum arquivo nessa página
-    if (d)
+    if (diretorio)
     {
 
         // Aqui nós usamos dois dir's fora do FOR para "limpar" arquivos que não irão ser utilizados no processo
-        dir = readdir(d);
-        dir = readdir(d);
+        dir = readdir(diretorio);
+        dir = readdir(diretorio);
         // Aqui inicializamos o Arquivo de texto para captura de dados dos vetores SCM
-        f = fopen(a_name, "w+");
+        file = fopen(arq_name, "w+");
         // Aqui nos usamos um FOR para realizar todos os processos para cada duas imagens(sem filtro e com filtro)
         for (int i = 1; i <= (QTDIMG / 2); i++)
         {
             strcpy(name, "./oncotex_pgm/");
-            dir = readdir(d);
+            dir = readdir(diretorio);
             strcat(name, dir->d_name);
             LerIMG(&img, name);
             strcpy(name, "./oncotex_pgm/");
-            dir = readdir(d);
+            dir = readdir(diretorio);
             strcat(name, dir->d_name);
             LerIMG(&img2, name);
-            Processo(&img, &img2, dir->d_name, quant, f);
+            Processo(&img, &img2, dir->d_name);
         }
 
         // Aqui nós fechamos o arquivo e o diretório
-        fclose(f);
-        closedir(d);
+        fclose(file);
+        closedir(diretorio);
     }
     // Finalizamos a contagem
     end = clock();
