@@ -73,19 +73,20 @@ void LerIMG(struct pgm *img, char *filename)
 }
 
 void Processo(struct pgm *img, struct pgm *img2, char *filename)
-{
+{   //Criamos a matriz SCM
     int **scm = calloc(quant, sizeof(int));
+    //Nós alocamos o espaço necessário para a matriz SCM, já quantizada
     for (int i = 0; i < (quant); i++)
     {
         scm[i] = calloc(quant, sizeof(int));
     }
-
+    //Aqui será preenchido a matriz SCM com os dados das duas imagens vetorizadas, de acordo com a quantização
     for (int i = 0; i < (img->i * img2->j); i++)
     {
 
         scm[(*(img->pData + i) / ((img->quan + 1) / quant))][(*(img2->pData + i) / ((img2->quan + 1) / quant))] += 1;
     }
-
+    //Preenchemos o arquivo de caracteristicas(txt) com os valores da matriz SCM vetorizada e quantizada
     for (int i = 0; i < (quant); i++)
     {
         for (int j = 0; j < (quant); j++)
@@ -93,5 +94,6 @@ void Processo(struct pgm *img, struct pgm *img2, char *filename)
             fprintf(file, "%i, ", scm[i][j]);
         }
     }
+    //Armazena o rótulo da imagem correspondente no fim de cada vetor SCM presente no arquivo de caracteristicas
     fprintf(file, "%c\n", filename[0]);
 }
