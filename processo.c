@@ -1,6 +1,6 @@
 #include "processo.h"
 
-void readPGMImage(struct pgm *pio, char *filename)
+void LerIMG(struct pgm *pio, char *filename)
 {
     FILE *fp;
     char ch;
@@ -58,7 +58,7 @@ void readPGMImage(struct pgm *pio, char *filename)
     fclose(fp);
 }
 
-void ProcessoPGMImage(struct pgm *pio, struct pgm *pio2, char *filename, int quant,FILE *f)
+void Processo(struct pgm *pio, struct pgm *pio2, char *filename, int quant, FILE *f)
 {
     int **scm = calloc(quant, sizeof(int));
     for (int i = 0; i < (quant); i++)
@@ -75,7 +75,7 @@ void ProcessoPGMImage(struct pgm *pio, struct pgm *pio2, char *filename, int qua
     for (int i = 0; i < (pio->c * pio2->r); i++)
     {
 
-        scm[*(pio->pData + i) / (256 / quant)][*(pio2->pData + i) / (256 / quant)] += 1;
+        scm[(*(pio->pData + i) / (256 / quant))][(*(pio2->pData + i) / (256 / quant))] += 1;
     }
 
     for (int i = 0; i < (quant); i++)
@@ -86,5 +86,4 @@ void ProcessoPGMImage(struct pgm *pio, struct pgm *pio2, char *filename, int qua
         }
     }
     fprintf(f, "%c\n", filename[0]);
-
 }
