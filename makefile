@@ -8,6 +8,3 @@ Trabalho.o:Trabalho.c
 
 processo.o:processo.c
 	gcc -o processo.o -c processo.c
-
-clean:
-	rm -f *.o Trabalho.e
