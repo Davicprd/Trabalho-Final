@@ -1,3 +1,12 @@
+//*******************************************************************//
+//* Alunos: Allan Neil, Francisco Davi, Leonardo Borges            *//
+//* Matriculas: 20221045050028, 20221045050125, 20221045050230    *//
+//* Avaliação 04: Trabalho Final                                 *//
+//* 04.505.23 - 2022.2 - Prof. Daniel Ferreira                  *//
+//* Compilador gcc Versão 6.3.0                                *//
+//*************************************************************//
+
+//Aqui foi declarada as bibliotecas, a estrutura, as variáveis globais e as funções que irão ser utilizadas nos arquivos '.c'
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
