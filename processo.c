@@ -65,13 +65,7 @@ void Processo(struct pgm *pio, struct pgm *pio2, char *filename, int quant, FILE
     {
         scm[i] = calloc(quant, sizeof(int));
     }
-    for (int i = 0; i < (quant); i++)
-    {
-        for (int j = 0; j < (quant); j++)
-        {
-            scm[i][j] = 0;
-        }
-    }
+
     for (int i = 0; i < (pio->c * pio2->r); i++)
     {
 
