@@ -8,12 +8,11 @@
 
 #include "processo.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-    strcpy(name,"./oncotex_pgm/");
-    // Aqui nós solicitamos a quantização em N níveis para o usuário
-    puts("Digite o nível de quantização: ");
-    scanf("%i", &quant);
+    // Quantização em N níveis
+    quant = atoi(argv[1]);
+    strcpy(name, "./oncotex_pgm/");
     sprintf(arq_name, "%i-scm.txt", quant);
     // Aqui nós começamos a contagem
     begin = clock();
@@ -30,18 +29,18 @@ int main(void)
         // Aqui nos usamos um FOR para realizar todos os processos para cada duas imagens(sem filtro e com filtro)
         for (int i = 1; i <= (QTDIMG / 2); i++)
         {
-            //Nós salvamos os nomes dos arquivos em uma string "name" para ser utilizada nas funções
+            // Nós salvamos os nomes dos arquivos em uma string "name" para ser utilizada nas funções
             strcpy(name, "./oncotex_pgm/");
-            //Foi utilizado um "dir" para receber um arquivo do diretório
+            // Foi utilizado um "dir" para receber um arquivo do diretório
             dir = readdir(diretorio);
             strcat(name, dir->d_name);
-            //Aqui é usada a função da leitura da imagem
+            // Aqui é usada a função da leitura da imagem
             LerIMG(&img, name);
             strcpy(name, "./oncotex_pgm/");
             dir = readdir(diretorio);
             strcat(name, dir->d_name);
             LerIMG(&img2, name);
-            //Aqui é usada a função do processo das imagens
+            // Aqui é usada a função do processo das imagens
             Processo(&img, &img2, dir->d_name);
         }
 
@@ -57,7 +56,7 @@ int main(void)
     // Armazenando o tempo total gasto nos processos
     time_total += time_per_img;
 
-    //Aqui nós imprimimos o tempo médio e total de processamento
+    // Aqui nós imprimimos o tempo médio e total de processamento
     printf("\nTempo Médio: %lf\n", time_total / QTDIMG);
     printf("\nTempo Total: %lf\n", time_total);
     return 0;
