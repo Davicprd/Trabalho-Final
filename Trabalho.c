@@ -10,6 +10,11 @@
 
 int main(int argc, char *argv[])
 {
+    // Verificação da linha de comando
+    if (argc != 2)
+    {
+        printf("Formato: <%s> <Nível de Quantização>", argv[0]);
+    }
     // Quantização em N níveis
     quant = atoi(argv[1]);
     strcpy(name, "./oncotex_pgm/");
